@@ -48,3 +48,7 @@ bool viewer::isBCF(std::string format) {
 bool viewer::isXCF(std::string format) {
 	return (format == "bh" || format == "bg" ||format == "sh" ||format == "sg");
 }
+
+bool viewer::isSAPPHIRE(std::string format) {
+	return (format == "bs");
+}

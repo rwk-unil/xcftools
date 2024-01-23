@@ -25,6 +25,7 @@
 #include <modes/bcf2binary.h>
 #include <modes/binary2bcf.h>
 #include <modes/binary2binary.h>
+#include <modes/binary2sapphire.h>
 
 using namespace std;
 
@@ -32,21 +33,24 @@ void viewer::view()
 {
 	if (isBCF(format) && !input_fmt_bcf) binary2bcf (region, nthreads).convert(finput, foutput);
 
-    int conversion_type = -1;
-    if (format == "bg") conversion_type = CONV_BCF_BG;
-    else if (format == "bh") conversion_type = CONV_BCF_BH;
-    else if (format == "sg") conversion_type = CONV_BCF_SG;
-    else if (format == "sh") conversion_type = CONV_BCF_SH;
-    else vrb.error("Output format [" + format + "] unrecognized");
+	int conversion_type = -1;
+	if (format == "bg") conversion_type = CONV_BCF_BG;
+	else if (format == "bh") conversion_type = CONV_BCF_BH;
+	else if (format == "sg") conversion_type = CONV_BCF_SG;
+	else if (format == "sh") conversion_type = CONV_BCF_SH;
+	else if (format == "bs") {
+		binary2sapphire (region, nthreads, maf).convert(finput, foutput);
+		return;
+	}
+	else vrb.error("Output format [" + format + "] unrecognized");
 
-    if (input_fmt_bcf)
-    	bcf2binary(region, maf, nthreads, conversion_type, drop_info).convert(finput, foutput);
-    else
-    {
-    	if (subsample)
-    		binary2binary(region, maf, nthreads, conversion_type, drop_info).convert(finput, foutput, subsample_exclude, subsample_isforce, samples_to_keep);
-    	else
-    		binary2binary(region, maf, nthreads, conversion_type, drop_info).convert(finput, foutput);
-
-    }
+	if (input_fmt_bcf)
+		bcf2binary(region, maf, nthreads, conversion_type, drop_info).convert(finput, foutput);
+	else
+	{
+		if (subsample)
+			binary2binary(region, maf, nthreads, conversion_type, drop_info).convert(finput, foutput, subsample_exclude, subsample_isforce, samples_to_keep);
+		else
+			binary2binary(region, maf, nthreads, conversion_type, drop_info).convert(finput, foutput);
+	}
 }

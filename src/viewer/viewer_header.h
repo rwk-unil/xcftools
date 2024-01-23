@@ -53,6 +53,7 @@ public:
 
 	bool isBCF(std::string);
 	bool isXCF(std::string);
+	bool isSAPPHIRE(std::string);
 
 	//METHODS
 	void view();
