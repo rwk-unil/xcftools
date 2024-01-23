@@ -105,6 +105,9 @@ void viewer::verbose_files() {
 		else vrb.bullet("Input XCF     : [" + options["input"].as < string > () + "]");
 		if (output == "-") vrb.bullet("Output BCF   : [STDOUT] / uncompressed");
 		else vrb.bullet("Output BCF    : [" + options["output"].as < string > () + "]");
+	} else if (isSAPPHIRE(format)) {
+		if (output == "-") vrb.error("Cannot output SAPPHIRE bianry to [STDOUT]");
+		else vrb.bullet("Output SAPPHIRE : [" + options["output"].as < string > () + "]");
 	} else vrb.error("Output format [" + format + "] unrecognized");
 	if (options.count("log")) vrb.bullet("Output LOG    : [" + options["log"].as < string > () + "]");
 }

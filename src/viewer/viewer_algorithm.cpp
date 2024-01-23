@@ -24,6 +24,7 @@
 
 #include <modes/bcf2binary.h>
 #include <modes/binary2bcf.h>
+#include <modes/binary2sapphire.h>
 
 using namespace std;
 
@@ -51,6 +52,9 @@ void viewer::view() {
 
 	//
 	else  if (isBCF(format)) binary2bcf (region, nthreads).convert(finput, foutput);
+
+	//
+	else if (format == "bs") binary2sapphire (region, nthreads, maf).convert(finput, foutput);
 
 	//
 	else vrb.error("Output format [" + format + "] unrecognized");
