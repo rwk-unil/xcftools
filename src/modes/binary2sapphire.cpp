@@ -30,6 +30,7 @@
 #include <objects/sparse_genotype.h>
 
 #include <cmath>
+#include <chrono>
 
 using namespace std;
 
@@ -104,8 +105,12 @@ void binary2sapphire::convert(string finput, string foutput) {
 	if (stop_id < start_id) {
 		stop_id = start_id;
 	}
-	std::cout << "Start ID : " << start_id << " Stop ID : " << stop_id << std::endl;
+	//std::cout << "Start ID : " << start_id << " Stop ID : " << stop_id << std::endl;
 	fifos.resize(stop_id-start_id, GenericKeepFifo<HetInfo, PPPred>(FIFO_SIZE, PPPred(PP_THRESHOLD)));
+
+	auto now = std::chrono::system_clock::now();
+	auto start = now;
+	auto then = now;
 
 	//Proceed with conversion
 	uint32_t n_lines = 0;
@@ -261,7 +266,13 @@ void binary2sapphire::convert(string finput, string foutput) {
 		n_lines++;
 
 		//Verbose
-		if (n_lines % 10000 == 0) vrb.bullet("Number of XCF records processed: N = " + stb.str(n_lines));
+		if (n_lines % 10000 == 0) {
+			then = now;
+			now = std::chrono::system_clock::now();
+			unsigned lps = std::round(10000 * 1e6 / std::chrono::duration_cast<std::chrono::microseconds>(now - then).count());
+			unsigned mean_lps = std::round(n_lines * 1e6 / std::chrono::duration_cast<std::chrono::microseconds>(now - start).count());
+			vrb.bullet("Number of XCF records processed: N = " + stb.str(n_lines) + ", records/s : " + std::to_string(lps) + " avg " + std::to_string(mean_lps));
+		}
 	}
 
 	vrb.bullet("Number of XCF records processed: N = " + stb.str(n_lines));
