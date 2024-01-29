@@ -72,7 +72,6 @@ void binary2sapphire::convert(string finput, string foutput) {
 
 	//Get file type
 	int32_t type = XR.typeFile(idx_file);
-	if (type != FILE_BINARY) vrb.error("[" + finput + "] is not a XCF file");
 
 	//Get sample IDs
 	vector < string > samples;
