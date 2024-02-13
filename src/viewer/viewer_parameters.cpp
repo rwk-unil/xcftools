@@ -38,7 +38,7 @@ void viewer::declare_options() {
 			("input,i", bpo::value< string >(), "Input genotype data in plain VCF/BCF format")
 			("region,r", bpo::value< string >(), "Region to be considered in --input")
 			("maf,m", bpo::value< float >()->default_value(0.001), "Threshold to distinguish rare variants from common ones")
-			;
+			("line-from-vcf,l", "Sapphire2Binary use LINE value from INFO field");
 
 	bpo::options_description opt_output ("Output files");
 	opt_output.add_options()

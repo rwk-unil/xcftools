@@ -310,7 +310,8 @@ public:
 
 	//CONSTRUCTORS/DESCTRUCTORS
 	binary2sapphire(std::string _region, int _nthreads, float maf_threshold = 0.001,
-			size_t fifo_size = 5, bool pp_from_maf = false, bool pp_from_af = true);
+			bool line_from_vcf = false, size_t fifo_size = 5,
+			bool pp_from_maf = false, bool pp_from_af = true);
 	~binary2sapphire();
 
 	//PROCESS
@@ -400,6 +401,7 @@ protected:
 	bool pp_from_maf;
 	bool pp_from_af;
 	bool extract_acan;
+	bool line_from_vcf;
 	std::vector<uint32_t> number_of_het_sites;
 	std::vector<uint32_t> number_of_low_pp_sites;
 	std::vector<uint32_t> number_of_snp_low_pp_sites;

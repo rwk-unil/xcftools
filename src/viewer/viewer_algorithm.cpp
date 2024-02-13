@@ -54,7 +54,7 @@ void viewer::view() {
 	else  if (isBCF(format)) binary2bcf (region, nthreads).convert(finput, foutput);
 
 	//
-	else if (format == "bs") binary2sapphire (region, nthreads, maf).convert(finput, foutput);
+	else if (format == "bs") binary2sapphire (region, nthreads, maf, options.count("line-from-vcf")).convert(finput, foutput);
 
 	//
 	else vrb.error("Output format [" + format + "] unrecognized");
