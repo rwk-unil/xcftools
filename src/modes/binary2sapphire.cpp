@@ -52,13 +52,13 @@ binary2sapphire::binary2sapphire(string _region, int _nthreads, float maf_thresh
 	pp_from_af(pp_from_af),
 	line_from_vcf(line_from_vcf) {
 	if (line_from_vcf) {
-		std::cout << "Line number will be extracted from LINE INFO field" << std::endl;
+		vrb.bullet("Line number will be extracted from LINE INFO field");
 	}
 	if (pp_from_maf) {
-		std::cout << "The PP score will be generated from MAF" << std::endl;
+		vrb.bullet("The PP score will be generated from MAF");
 	}
 	if (pp_from_af) {
-		std::cout << "The PP score will be generated from AF" << std::endl;
+		vrb.bullet("The PP score will be generated from AF");
 	}
 }
 
@@ -84,7 +84,7 @@ void binary2sapphire::convert(string finput, string foutput) {
 	//Get sample IDs
 	vector < string > samples;
 	int32_t nsamples = XR.getSamples(idx_file, samples);
-	vrb.bullet("#samples = " + stb.str(nsamples));
+	vrb.bullet("#samples      : " + stb.str(nsamples));
 
 	//Buffer for input/output
 	int32_t * input_buffer = (int32_t*)malloc(2 * nsamples * sizeof(int32_t));
