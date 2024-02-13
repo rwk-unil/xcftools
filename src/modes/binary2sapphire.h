@@ -324,7 +324,7 @@ protected:
 	}
 
 	void set_maf_threshold(const float maf_threhsold) {
-		std::cout << "Setting MAF threshold to " << maf_threhsold << std::endl;
+		//std::cout << "Setting MAF threshold to " << maf_threhsold << std::endl;
 		MAF_THRESHOLD = maf_threhsold;
 	}
 
@@ -344,14 +344,14 @@ protected:
 			total_kept_pred += f.get_number_kept_with_pred();
 		}
 
-		std::cout << "Extracted a total of " << total_kept << " genotypes" << std::endl;
-		std::cout << "From which a total of " << total_kept_pred << " were selected given the predicate" << std::endl;
+		vrb.bullet("Extracted a total of " + stb.str(total_kept) + " genotypes");
+		vrb.bullet("From which a total of " + stb.str(total_kept_pred) + " were selected given the predicate");
 	}
 
 	void write_to_file(std::string filename) {
 		std::fstream ofs(filename, std::ios_base::binary | std::ios_base::out | std::ios_base::trunc);
 		if (!ofs.is_open()) {
-			std::cerr << "Cannot open file " << filename << std::endl;
+			vrb.error("Cannot open file " + stb.str(filename));
 		}
 
 		const uint32_t endianness = 0xaabbccdd;
@@ -382,7 +382,7 @@ protected:
 			ofs.write(reinterpret_cast<const char*>(&offset_table[idx]), sizeof(decltype(offset_table.front())));
 		}
 
-		std::cout << "Done writing file " << filename << std::endl;
+		vrb.bullet("Done writing file " + stb.str(filename));
 
 		ofs.close();
 	}
