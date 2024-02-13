@@ -41,7 +41,7 @@ void viewer::declare_options() {
 			("samples,s", bpo::value< string >(), "XCF2XCF only: comma separated list of samples to include (or exclude with \"^\" prefix)")
 			("samples-file,S", bpo::value< string >(), "XCF2XCF only: File of samples to include (or exclude with \"^\" prefix)")
 			("force-samples", "Only warn about unknown subset samples")
-			;
+			("line-from-vcf,l", "Sapphire2Binary use LINE value from INFO field");
 
 	bpo::options_description opt_output ("Output files");
 	opt_output.add_options()

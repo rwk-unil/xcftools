@@ -39,7 +39,7 @@ void viewer::view()
 	else if (format == "sg") conversion_type = CONV_BCF_SG;
 	else if (format == "sh") conversion_type = CONV_BCF_SH;
 	else if (format == "bs") {
-		binary2sapphire (region, nthreads, maf).convert(finput, foutput);
+		binary2sapphire (region, nthreads, maf, options.count("line-from-vcf")).convert(finput, foutput);
 		return;
 	}
 	else vrb.error("Output format [" + format + "] unrecognized");

@@ -35,7 +35,8 @@
 using namespace std;
 
 binary2sapphire::binary2sapphire(string _region, int _nthreads, float maf_threshold,
-				 size_t fifo_size, bool pp_from_maf, bool pp_from_af) :
+				 bool line_from_vcf, size_t fifo_size,
+				 bool pp_from_maf, bool pp_from_af) :
 	region(_region), nthreads(_nthreads),
 	FIFO_SIZE(fifo_size),
 	PP_THRESHOLD(0.99),
@@ -48,7 +49,11 @@ binary2sapphire::binary2sapphire(string _region, int _nthreads, float maf_thresh
 	pred(PP_THRESHOLD),
 	progress(0),
 	pp_from_maf(pp_from_maf),
-	pp_from_af(pp_from_af) {
+	pp_from_af(pp_from_af),
+	line_from_vcf(line_from_vcf) {
+	if (line_from_vcf) {
+		std::cout << "Line number will be extracted from LINE INFO field" << std::endl;
+	}
 	if (pp_from_maf) {
 		std::cout << "The PP score will be generated from MAF" << std::endl;
 	}
@@ -66,6 +71,8 @@ void binary2sapphire::convert(string finput, string foutput) {
 	vrb.title("Extracting from XCF to SAPPHIRE Binary");
 	if (region.empty()) vrb.bullet("Region        : All");
 	else vrb.bullet("Region        : " + stb.str(region));
+
+	int32_t *vLINE = NULL, nLINE = 0, rLINE = 0;
 
 	//Opening XCF reader for input
 	xcf_reader XR(region, nthreads);
@@ -211,6 +218,14 @@ void binary2sapphire::convert(string finput, string foutput) {
 			//std::cout << "AF: " << AF << " Synth PP : " << synthetic_pp << std::endl;
 		}
 
+		if (line_from_vcf) {
+			int32_t rLINE = bcf_get_info_int32(XR.sync_reader->readers[0].header, XR.sync_lines[0], "LINE", &vLINE, &nLINE);
+			if (rLINE != 1 || nLINE == 0) {
+				helper_tools::error("LINE is needed in file");
+			}
+			//std::cout << "rLine: " << rLINE << " vLINE[0]: " << vLINE[0] << " nLINE: " << nLINE << std::endl;
+		}
+
 		// Extract heterozygous sites and PP
 		for (size_t i = start_id; i < stop_id; ++i) {
 			int encoded_a0 = output_buffer[i*PLOIDY_2];
@@ -237,7 +252,7 @@ void binary2sapphire::convert(string finput, string foutput) {
 					pp = 0.97; /* arbitrary value */
 				}
 
-				HetInfo hi(line_counter, encoded_a0, encoded_a1, pp);
+				HetInfo hi(line_from_vcf ? vLINE[0] : line_counter, encoded_a0, encoded_a1, pp);
 
 				if (pred(hi)) {
 					number_of_low_pp_sites[i]++;
@@ -280,6 +295,7 @@ void binary2sapphire::convert(string finput, string foutput) {
 	//Free
 	free(input_buffer);
 	free(output_buffer);
+	if (vLINE) free(vLINE);
 
 	//Close files
 	XR.close();
