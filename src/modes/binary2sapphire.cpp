@@ -228,7 +228,7 @@ void binary2sapphire::convert(string finput, string foutput) {
 
 		// Extract heterozygous sites and PP
 		for (size_t i = start_id; i < stop_id; ++i) {
-			int encoded_a0 = output_buffer[i*PLOIDY_2];
+			int encoded_a0 = output_buffer[i*PLOIDY_2] & ~1;
 			int encoded_a1 = output_buffer[i*PLOIDY_2+1];
 			int a0 = bcf_gt_allele(encoded_a0);
 			int a1 = bcf_gt_allele(encoded_a1);
