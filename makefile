@@ -14,7 +14,7 @@ LDFLAGS+= -O3
 # Disable this if building on x86 CPUs without AVX2 support.
 UNAME_M := $(shell uname -m)
 ifeq ($(UNAME_M),x86_64)
-    CXXFLAGS+= -march=x86-64-v3
+    CXXFLAGS+= -march=skylake
 endif
 
 #COMMIT TRACING
