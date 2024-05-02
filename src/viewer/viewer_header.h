@@ -40,6 +40,7 @@ public:
 	std::string format;
 	std::string finput;
 	std::string foutput;
+	std::string fsapphire;
 	bool input_fmt_bcf;
 	bool drop_info;
 	float maf;

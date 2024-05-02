@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2022-2023 Olivier Delaneau
+ * Copyright (C) 2024 Rick Wertenbroek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,35 +20,40 @@
  * SOFTWARE.
  ******************************************************************************/
 
-#include <viewer/viewer_header.h>
+#ifndef BINARYSAPPHIRE2BINARY_H_
+#define BINARYSAPPHIRE2BINARY_H_
 
-using namespace std;
+#include <utils/otools.h>
+#include <containers/bitvector.h>
+#include <objects/sparse_genotype.h>
+#include <utils/xcf.h>
 
-viewer::viewer() : input_fmt_bcf(true), drop_info(true), maf(1.0f/32), subsample(false), subsample_exclude(false), subsample_isforce(false), nthreads(1) {
-}
 
-viewer::~viewer() {
-}
+#define CONV_BCF_BG	0
+#define CONV_BCF_BH	1
+#define CONV_BCF_SG	2
+#define CONV_BCF_SH	3
 
-void viewer::view(vector < string > & args) {
-	declare_options();
-	parse_command_line(args);
-	check_options();
-	verbose_files();
-	verbose_options();
-	read_files_and_initialise();
-	view();
-	write_files_and_finalise();
-}
+class binarysapphire2binary {
+public:
+	//PARAM
+	bitvector binary_bit_buf;
+	std::vector<int32_t> sparse_int_buf;
 
-bool viewer::isBCF(std::string format) {
-	return (format == "bcf");
-}
+	std::string region;
+	int nthreads;
+	int mode;
+	float minmaf;
+	bool drop_info;
 
-bool viewer::isXCF(std::string format) {
-	return (format == "bh" || format == "bg" ||format == "sh" ||format == "sg");
-}
+	//CONSTRUCTORS/DESCTRUCTORS
+	binarysapphire2binary(std::string, float, int, int, bool);
+	virtual ~binarysapphire2binary();
 
-bool viewer::isSAPPHIRE(std::string format) {
-	return (format == "bs") || (format == "sb");
-}
+	//PROCESS
+	void convert(std::string, std::string, std::string);
+	int32_t parse_genotypes(xcf_reader& XR, const uint32_t idx_file);
+
+};
+
+#endif /* BINARYSAPPHIRE2BINARY_H_ */

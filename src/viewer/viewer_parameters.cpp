@@ -41,7 +41,8 @@ void viewer::declare_options() {
 			("samples,s", bpo::value< string >(), "XCF2XCF only: comma separated list of samples to include (or exclude with \"^\" prefix)")
 			("samples-file,S", bpo::value< string >(), "XCF2XCF only: File of samples to include (or exclude with \"^\" prefix)")
 			("force-samples", "Only warn about unknown subset samples")
-			("line-from-vcf,l", "Sapphire2Binary use LINE value from INFO field");
+			("line-from-vcf,l", "Sapphire2Binary use LINE value from INFO field")
+			("sapphire-bin,b", bpo::value < string >(), "SAPPHIRE input binary file for polishing");
 
 	bpo::options_description opt_output ("Output files");
 	opt_output.add_options()
@@ -118,6 +119,7 @@ void viewer::check_options() {
 	format = options["format"].as < string > ();
 	finput = options["input"].as < string > ();
 	foutput = options["output"].as < string > ();
+	fsapphire = (options.count("sapphire-bin")) ? options["sapphire-bin"].as < string > () : "";
 	nthreads = options["threads"].as < int > ();
 	drop_info = !options.count("keep-info");
 	maf = options["maf"].as < float > ();

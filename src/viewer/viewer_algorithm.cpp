@@ -26,6 +26,7 @@
 #include <modes/binary2bcf.h>
 #include <modes/binary2binary.h>
 #include <modes/binary2sapphire.h>
+#include <modes/binarysapphire2binary.h>
 
 using namespace std;
 
@@ -40,6 +41,10 @@ void viewer::view()
 	else if (format == "sh") conversion_type = CONV_BCF_SH;
 	else if (format == "bs") {
 		binary2sapphire (region, nthreads, maf, options.count("line-from-vcf")).convert(finput, foutput);
+		return;
+	}
+	else if (format == "sb") {
+		binarysapphire2binary(region, maf, nthreads, conversion_type, drop_info).convert(finput, foutput, fsapphire);
 		return;
 	}
 	else vrb.error("Output format [" + format + "] unrecognized");

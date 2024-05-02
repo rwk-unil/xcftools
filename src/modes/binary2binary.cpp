@@ -249,27 +249,27 @@ void binary2binary::convert(std::string finput, std::string foutput, const bool 
 		std::map<std::string, int32_t> map_str2int_inc;
 		std::set<int32_t> set_int2str_inc;
 
-	    for (int32_t i=0; i<nsamples_input; i++)
-	    	map_str2int_inc[XR.ind_names[idx_file][i]] = i;
+		for (int32_t i=0; i<nsamples_input; i++)
+			map_str2int_inc[XR.ind_names[idx_file][i]] = i;
 
-	    for (auto i=0; i<smpls.size(); i++)
-	    {
-	    	if (map_str2int_inc.find(smpls[i]) == map_str2int_inc.end())
-	    	{
+		for (auto i=0; i<smpls.size(); i++)
+		{
+			if (map_str2int_inc.find(smpls[i]) == map_str2int_inc.end())
+			{
 				if (isforce) {
 					vrb.warning("Exclude called for sample that does not exist in header: " + smpls[i] + "... skipping");
 				} else {
 					vrb.error("Exclude called for sample that does not exist in header: " + smpls[i] + ". Use \"--force-samples\" to ignore this error.");
 				}
-	    	} else
-	    	{
-	    		int32_t val = map_str2int_inc[smpls[i]];
-	    		set_int2str_inc.insert(val);
-	    	}
-	    }
+			} else
+			{
+				int32_t val = map_str2int_inc[smpls[i]];
+				set_int2str_inc.insert(val);
+			}
+		}
 
-	    for (auto it = set_int2str_inc.begin(); it != set_int2str_inc.end(); ++it)
-	    {
+		for (auto it = set_int2str_inc.begin(); it != set_int2str_inc.end(); ++it)
+		{
 			sample_names.push_back(XR.ind_names[idx_file][*it]);
 			sample_fathers.push_back(XR.ind_fathers[idx_file][*it]);
 			sample_mothers.push_back(XR.ind_mothers[idx_file][*it]);
@@ -286,7 +286,7 @@ void binary2binary::convert(std::string finput, std::string foutput, const bool 
 				full2subs[(*it)*2+0] = 2*(subs2full.size()-1)+0;
 				full2subs[(*it)*2+1] = 2*(subs2full.size()-1)+1;
 			}
-	    }
+		}
 	}
 	if (sample_names.empty())
 	{
