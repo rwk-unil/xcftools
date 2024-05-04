@@ -171,6 +171,8 @@ void binarysapphire2binary::convert(std::string finput, std::string foutput, std
 	std::map<size_t, VCFLineWork> work;
 	fill_work_from_himm(work, himm);
 
+	vrb.bullet("Workload ready, updating genotypes...");
+
 	if (drop_info) XW.writeHeader(XR.sync_reader->readers[0].header, XR.ind_names[idx_file], std::string("XCFtools ") + std::string(XCFTLS_VERSION));
 	else XW.writeHeaderClone(XR.sync_reader->readers[0].header,XR.ind_names[idx_file], std::string("XCFtools ") + std::string(XCFTLS_VERSION));
 
@@ -226,23 +228,24 @@ void binarysapphire2binary::convert(std::string finput, std::string foutput, std
 					} else if (type==RECORD_SPARSE_HAPLOTYPE) {
 						// We don't know if the original file has minor idx0 or minor idx1 set, so search which one
 						// This may seem slow, but it is sparse because there are not many elements, so this find is quite fast
-						auto it0 = std::find(sparse_int_buf.begin(), sparse_int_buf.end(), minor_idx0);
-						auto it1 = std::find(sparse_int_buf.begin(), sparse_int_buf.end(), minor_idx1);
+						auto end = sparse_int_buf.begin() + n_elements;
+						auto it0 = std::find(sparse_int_buf.begin(), end, minor_idx0);
+						auto it1 = std::find(sparse_int_buf.begin(), end, minor_idx1);
 
-						if ((it0 != std::end(sparse_int_buf)) && (it1 != std::end(sparse_int_buf))) {
+						if ((it0 != end) && (it1 != end)) {
 							vrb.print("Variant: " + bcf_to_string(XR.sync_lines[0], XR.sync_reader->readers[0].header));
 							std::cerr << sparse_int_buf << std::endl;
 							vrb.error("Sample " + std::to_string(idx) + " is hom alt, cannot rephase");
 							errors++;
 						}
-						if ((it0 == std::end(sparse_int_buf)) && (it1 == std::end(sparse_int_buf))) {
+						if ((it0 == end) && (it1 == end)) {
 							vrb.print("Variant: " + bcf_to_string(XR.sync_lines[0], XR.sync_reader->readers[0].header));
 							std::cerr << sparse_int_buf << std::endl;
 							vrb.error("Sample " + std::to_string(idx) + " is hom ref, cannot rephase");
 							errors++;
 						} else {
 							// Choose the correct iterator
-							auto it = (it0 == std::end(sparse_int_buf)) ? it1 : it0;
+							auto it = (it0 == end) ? it1 : it0;
 							// Set the index of a0 if a0, else a1
 							*it = (todo.second.a0 ? minor_idx0 : minor_idx1);
 						}
