@@ -71,7 +71,8 @@ void fill_work_from_himm(std::map<size_t, VCFLineWork>& work, HetInfoMemoryMap& 
 
 binarysapphire2binary::binarysapphire2binary(std::string _region, float _minmaf, int _nthreads, int _mode, bool _drop_info)
 {
-	mode = _mode;
+	//mode = _mode;
+	mode = CONV_BCF_SH;
 	nthreads = _nthreads;
 	region = _region;
 	minmaf = _minmaf;
