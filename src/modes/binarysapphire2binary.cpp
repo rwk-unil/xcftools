@@ -234,13 +234,11 @@ void binarysapphire2binary::convert(std::string finput, std::string foutput, std
 
 						if ((it0 != end) && (it1 != end)) {
 							vrb.print("Variant: " + bcf_to_string(XR.sync_lines[0], XR.sync_reader->readers[0].header));
-							std::cerr << sparse_int_buf << std::endl;
 							vrb.error("Sample " + std::to_string(idx) + " is hom alt, cannot rephase");
 							errors++;
 						}
 						if ((it0 == end) && (it1 == end)) {
 							vrb.print("Variant: " + bcf_to_string(XR.sync_lines[0], XR.sync_reader->readers[0].header));
-							std::cerr << sparse_int_buf << std::endl;
 							vrb.error("Sample " + std::to_string(idx) + " is hom ref, cannot rephase");
 							errors++;
 						} else {
