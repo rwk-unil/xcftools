@@ -31,6 +31,15 @@
 #include "utils/sapphire/het_info.hpp"
 #include "utils/sapphire/het_info_loader.hpp"
 
+template<typename T>
+std::ostream & operator<<(std::ostream & os, std::vector<T> vec)
+{
+    os << "{ ";
+    std::copy(vec.begin(), vec.end(), std::ostream_iterator<T>(os, " "));
+    os << "}";
+    return os;
+}
+
 std::string bcf_to_string(bcf1_t *line, bcf_hdr_t *hdr) {
 	auto contig = bcf_hdr_id2name(hdr, line->rid);
 	auto pos1 = line->pos; // Is 1 based and not 0 based
@@ -222,11 +231,13 @@ void binarysapphire2binary::convert(std::string finput, std::string foutput, std
 
 						if ((it0 != std::end(sparse_int_buf)) && (it1 != std::end(sparse_int_buf))) {
 							vrb.print("Variant: " + bcf_to_string(XR.sync_lines[0], XR.sync_reader->readers[0].header));
+							std::cerr << sparse_int_buf << std::endl;
 							vrb.error("Sample " + std::to_string(idx) + " is hom alt, cannot rephase");
 							errors++;
 						}
 						if ((it0 == std::end(sparse_int_buf)) && (it1 == std::end(sparse_int_buf))) {
 							vrb.print("Variant: " + bcf_to_string(XR.sync_lines[0], XR.sync_reader->readers[0].header));
+							std::cerr << sparse_int_buf << std::endl;
 							vrb.error("Sample " + std::to_string(idx) + " is hom ref, cannot rephase");
 							errors++;
 						} else {
