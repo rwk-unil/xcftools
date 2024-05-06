@@ -206,8 +206,8 @@ void binarysapphire2binary::convert(std::string finput, std::string foutput, std
 			} else {
 				for (auto todo : work_line->second.updated_data) {
 					auto idx = todo.first;
-					auto minor_idx0 = 2*idx;
-					auto minor_idx1 = 2*idx+1;
+					auto mini_idx0 = 2*idx;
+					auto mini_idx1 = 2*idx+1;
 	
 					// Update GT
 					if (type==RECORD_BINARY_GENOTYPE) {
@@ -216,21 +216,21 @@ void binarysapphire2binary::convert(std::string finput, std::string foutput, std
 						// No need to update anything since het is always "01" ("10" is missing)
 					} else if (type==RECORD_BINARY_HAPLOTYPE) {
 						// Only update if rephased, no need otherwise
-						if (binary_bit_buf.get(minor_idx0) != todo.second.a0) {
+						if (binary_bit_buf.get(mini_idx0) != todo.second.a0) {
 							updated_gts++;
-							binary_bit_buf.set(minor_idx0, todo.second.a0);
-							binary_bit_buf.set(minor_idx1, todo.second.a1);
+							binary_bit_buf.set(mini_idx0, todo.second.a0);
+							binary_bit_buf.set(mini_idx1, todo.second.a1);
 						}
 					} else if (type==RECORD_SPARSE_GENOTYPE) {
 						vrb.error("Binary genotype is for unphased data");
 						errors++;
 						// No need to update anything since het is always "01" ("10" is missing)
 					} else if (type==RECORD_SPARSE_HAPLOTYPE) {
-						// We don't know if the original file has minor idx0 or minor idx1 set, so search which one
+						// We don't know if the original file has mini idx0 or mini idx1 set, so search which one
 						// This may seem slow, but it is sparse because there are not many elements, so this find is quite fast
 						auto end = sparse_int_buf.begin() + n_elements;
-						auto it0 = std::find(sparse_int_buf.begin(), end, minor_idx0);
-						auto it1 = std::find(sparse_int_buf.begin(), end, minor_idx1);
+						auto it0 = std::find(sparse_int_buf.begin(), end, mini_idx0);
+						auto it1 = std::find(sparse_int_buf.begin(), end, mini_idx1);
 
 						if ((it0 != end) && (it1 != end)) {
 							vrb.print("Variant: " + bcf_to_string(XR.sync_lines[0], XR.sync_reader->readers[0].header));
@@ -245,7 +245,7 @@ void binarysapphire2binary::convert(std::string finput, std::string foutput, std
 							// Choose the correct iterator
 							auto it = (it0 == end) ? it1 : it0;
 							// Set the index of a0 if a0, else a1
-							*it = (todo.second.a0 ? minor_idx0 : minor_idx1);
+							*it = ((todo.second.a0 xor !minor) ? mini_idx0 : mini_idx1);
 						}
 					}
 				}
