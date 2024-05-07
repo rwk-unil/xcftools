@@ -255,6 +255,7 @@ void binarysapphire2binary::convert(std::string finput, std::string foutput, std
 		//Write record
 		if (mode == CONV_BCF_SG && rare)
 		{
+			vrb.error("Binary genotype is for unphased data");
 			if (type==RECORD_SPARSE_GENOTYPE)
 				XW.writeRecord(RECORD_SPARSE_GENOTYPE, reinterpret_cast<char*>(sparse_int_buf.data()), n_elements * sizeof(int32_t));
 			else if (type==RECORD_BINARY_GENOTYPE)
@@ -281,7 +282,7 @@ void binarysapphire2binary::convert(std::string finput, std::string foutput, std
 				n_elements=0;
 				for (size_t i = 0; i < 2 * nsamples_input; ++i)
 				{
-					if (binary_bit_buf.get(i) == true)
+					if (binary_bit_buf.get(i) == minor)
 						sparse_int_buf[n_elements++]=i;
 				}
 				XW.writeRecord(RECORD_SPARSE_HAPLOTYPE, reinterpret_cast<char*>(sparse_int_buf.data()), n_elements * sizeof(int32_t));
@@ -290,6 +291,7 @@ void binarysapphire2binary::convert(std::string finput, std::string foutput, std
 		}
 		else if (mode == CONV_BCF_SG || mode == CONV_BCF_BG)
 		{
+			vrb.error("Binary genotype is for unphased data");
 			if (type==RECORD_BINARY_GENOTYPE)
 				XW.writeRecord(RECORD_BINARY_GENOTYPE, binary_bit_buf.bytes, binary_bit_buf.n_bytes);
 			else if (type==RECORD_SPARSE_GENOTYPE)
