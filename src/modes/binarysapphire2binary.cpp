@@ -244,8 +244,51 @@ void binarysapphire2binary::convert(std::string finput, std::string foutput, std
 						} else {
 							// Choose the correct iterator
 							auto it = (it0 == end) ? it1 : it0;
+
+							// The alt allele is the minor allele
+							if (minor) {
+								// a0 is alt
+								if (todo.second.a0) {
+									// Only update if rephased, no need otherwise
+									if (*it != mini_idx0) {
+										*it = mini_idx0;
+										updated_gts++;
+									}
+								// a1 is alt
+								} else {
+									// Only update if rephased, no need otherwise
+									if (*it != mini_idx1) {
+										*it = mini_idx1;
+										updated_gts++;
+									}
+								}
+							// The ref allele is the minor allele
+							} else {
+								// a0 is alt
+								if (todo.second.a0) {
+									// Only update if rephased, no need otherwise
+									// Because alt is not minor, the ref allele is encoded
+									if (*it != mini_idx1) {
+										*it = mini_idx1;
+										updated_gts++;
+									}
+								// a1 is alt
+								} else {
+									// Only update if rephased, no need otherwise
+									// Because alt is not minor, the ref allele is encoded
+									if (*it != mini_idx0) {
+										*it = mini_idx0;
+										updated_gts++;
+									}
+								}
+							}
+							// Note: the code above could be optimized/refactored with XOR operators (similarly as below), but left expanded for clarity
+
+							/* OLD CODE, works but updated_gts is incremented in all cases...
 							// Set the index of a0 if a0, else a1
 							*it = ((todo.second.a0 xor !minor) ? mini_idx0 : mini_idx1);
+							updated_gts++;
+							*/
 						}
 					}
 				}
@@ -334,13 +377,13 @@ void binarysapphire2binary::convert(std::string finput, std::string foutput, std
 
 		//Verbose
 		if ((n_lines_comm+n_lines_rare) % 10000 == 0) {
-			if (mode == CONV_BCF_BG || mode == CONV_BCF_BH) vrb.bullet("Number of BCF records processed: N=" + stb.str(n_lines_comm));
-			else vrb.bullet("Number of BCF records processed: Nc=" + stb.str(n_lines_comm) + "/ Nr=" + stb.str(n_lines_rare));
+			if (mode == CONV_BCF_BG || mode == CONV_BCF_BH) vrb.bullet("Number of BCF records processed: N=" + stb.str(n_lines_comm) + " / updated GTs=" + stb.str(updated_gts));
+			else vrb.bullet("Number of BCF records processed: Nc=" + stb.str(n_lines_comm) + "/ Nr=" + stb.str(n_lines_rare) + " / updated GTs=" + stb.str(updated_gts));
 		}
 	}
 
-	if (mode == CONV_BCF_BG || mode == CONV_BCF_BH) vrb.bullet("Number of records processed: N=" + stb.str(n_lines_comm));
-	else vrb.bullet("Number of records processed: Nc=" + stb.str(n_lines_comm) + "/ Nr=" + stb.str(n_lines_rare));
+	if (mode == CONV_BCF_BG || mode == CONV_BCF_BH) vrb.bullet("Number of records processed: N=" + stb.str(n_lines_comm) + " / updated GTs=" + stb.str(updated_gts));
+	else vrb.bullet("Number of records processed: Nc=" + stb.str(n_lines_comm) + "/ Nr=" + stb.str(n_lines_rare) + " / updated GTs=" + stb.str(updated_gts));
 
 	if (!drop_info) XW.hts_record = rec;
 
